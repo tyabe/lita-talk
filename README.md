@@ -8,7 +8,7 @@ Use of docomo dialogue api.
 Add lita-talk to your Lita instance's Gemfile:
 
 ``` ruby
-gem "lita-talk"
+gem "lita-talk", github: "tyabe/lita-talk"
 ```
 
 ## Configuration
