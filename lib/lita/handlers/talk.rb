@@ -10,6 +10,8 @@ module Lita
 
       def talk(payload)
         response = payload[:message]
+        return unless response.command?
+
         message = payload[:message].body
 
         dialogue = client.create_dialogue(message, context: @context)
