@@ -17,14 +17,14 @@ module Lita
         dialogue = client.create_dialogue(message, context: @context)
 
         if dialogue.body["requestError"]
-          response.reply(dialogue.body["requestError"])
+          response.reply_with_mention(dialogue.body["requestError"])
         else
           @context = dialogue.body["context"]
-          response.reply(dialogue.body["utt"])
+          response.reply_with_mention(dialogue.body["utt"])
         end
       rescue Exception => e
         log.error(%<Error: #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}>)
-        response.reply(e.message)
+        response.reply_with_mention(e.message)
       end
 
       private
