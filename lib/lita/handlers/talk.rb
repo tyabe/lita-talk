@@ -5,6 +5,8 @@ module Lita
     class Talk < Handler
 
       config :docomo_api_key, type: String, required: true
+      config :parsing_error_message, type: String
+      config :error_message, type: String
 
       on :unhandled_message, :talk
 
@@ -22,9 +24,12 @@ module Lita
           @context = dialogue.body["context"]
           response.reply_with_mention(dialogue.body["utt"])
         end
-      rescue Exception => e
+      rescue Faraday::ParsingError => e
         log.error(%<Error: #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}>)
-        response.reply_with_mention(e.message)
+        response.reply_with_mention(config.parsing_error_message || e.message )
+      rescue => e
+        log.error(%<Error: #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}>)
+        response.reply_with_mention(config.error_message || e.message )
       end
 
       private
