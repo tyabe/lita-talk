@@ -16,12 +16,15 @@ module Lita
 
         message = payload[:message].body
 
-        dialogue = client.create_dialogue(message, context: @context)
+        context, mode = redis.hmget(:session, 'context', 'mode')
+        log.debug "contxt: #{context}, mode: #{mode}"
+        dialogue = client.create_dialogue(message, context: context, mode: mode)
 
         if dialogue.body["requestError"]
           response.reply_with_mention(dialogue.body["requestError"])
         else
-          @context = dialogue.body["context"]
+          redis.hmset(:session, "context", dialogue.body["context"], "mode", dialogue.body["mode"])
+          redis.expire(:session, 12)
           response.reply_with_mention(dialogue.body["utt"])
         end
       rescue Faraday::ParsingError => e
