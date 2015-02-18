@@ -24,7 +24,7 @@ module Lita
           response.reply_with_mention(dialogue.body["requestError"])
         else
           redis.hmset(:session, "context", dialogue.body["context"], "mode", dialogue.body["mode"])
-          redis.expire(:session, 12)
+          redis.expire(:session, 30)
           response.reply_with_mention(dialogue.body["utt"])
         end
       rescue Faraday::ParsingError => e
