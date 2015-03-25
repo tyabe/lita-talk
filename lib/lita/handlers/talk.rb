@@ -25,7 +25,8 @@ module Lita
         dialogue = client.create_dialogue(message, context: context, mode: mode)
 
         if dialogue.body["requestError"]
-          response.reply_with_mention(dialogue.body["requestError"])
+          log.error("Error: #{dialogue.body["requestError"]}")
+          response.reply_with_mention(config.error_message || dialogue.body["requestError"]["text"])
         else
           redis.hmset(context_key, "context", dialogue.body["context"], "mode", dialogue.body["mode"])
           redis.expire(context_key, 30)
